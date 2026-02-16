@@ -1,0 +1,18 @@
+.loginPage {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    font-size: 18px;
+
+    margin-top: 40px;
+    gap: 10px;
+}
+
+.loginInput {
+    font-size: 18px;
+
+    height: 28px;
+    width: 200px;
+}
