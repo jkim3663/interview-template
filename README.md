@@ -13,10 +13,14 @@ interview-template/
 ├── frontend/
     └── src/                        # main folder to add .tsx files
         └── App.tsx
+        └── assets/                 # static file, image, etc.
+        └── components/             # shareable components
+        └── features/               # specific feature to implement
 ├── backend/
     └── main.py                     # use this empty file for live interviews (if needed)
     └── flask_server.py             # add APIs here for frontend to call backend
     └── requirements.txt
+    └── resources/                  # folder to add static content for backend (e.g. mock API responses)
 ```
 
 ## Setup
