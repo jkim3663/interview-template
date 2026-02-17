@@ -17,8 +17,9 @@ interview-template/
         └── components/             # shareable components
         └── features/               # specific feature to implement
 ├── backend/
-    └── main.py                     # use this empty file for live interviews (if needed)
+    └── main.py                     # use this empty file for live DSA interviews (if needed)
     └── flask_server.py             # add APIs here for frontend to call backend
+    └── api_practice.py             # use this to practice calling REST APIs from backend 
     └── requirements.txt
     └── resources/                  # folder to add static content for backend (e.g. mock API responses)
 ```
