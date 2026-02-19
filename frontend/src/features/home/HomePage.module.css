@@ -1,0 +1,14 @@
+.homePageContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.createObservation {
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+
+    margin-top: 20px;
+    gap: 20px;
+}
