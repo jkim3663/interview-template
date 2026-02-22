@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import getObservation from "../../services/api-service/api-service";
+import {getObservation, postObservation} from "../../services/api-service/api-service";
 import styles from './HomePage.module.css';
+import Button from "../../components/button/Button";
 
 interface Item {
     id: string;
@@ -13,6 +14,11 @@ function HomePage() {
     
     const [isLoading, setLoading] = useState<boolean>(false);
     const [observationData, setObservationData] = useState<Item[]>();
+    const [refreshData, setRefreshData] = useState<boolean>(false);
+
+    const [id, setId] = useState<string>('');
+    const [status, setStatus] = useState<string>('');
+    const [code, setCode] = useState<string>('');
 
     useEffect(() => {
         if (hasFetched.current) {
@@ -24,8 +30,12 @@ function HomePage() {
     }, []);
 
     useEffect(() => {
-        console.log('observations: ', observationData);
-    }, [observationData]);
+        if (hasFetched.current) {
+            return;
+        }
+        hasFetched.current = true;
+        fetchObservations();
+    }, [refreshData]);
 
     async function fetchObservations() {
         try {
@@ -34,8 +44,6 @@ function HomePage() {
             for (let i = 1; i <= 4; i++) {
                 const response = await getObservation(String(i));
                 rawObservations.push(response);
-                    // .then((data) => raw_observations.push(data))
-                    // .catch((error) => console.log(error));
             }
 
             const mapped: Item[] = rawObservations.map((value) => ({
@@ -44,11 +52,36 @@ function HomePage() {
                 code: value.code.coding[0].code
             }));
             setObservationData(mapped);
+            setRefreshData(false);
         } catch (error) {
+            setLoading(false);
             throw new Error('unexpected error: ');
         } finally {
             setLoading(false);
         }
+    }
+
+    async function handleSubmit() { 
+        if (id.length <= 0 || status.length <= 0 || code.length <= 0) {
+            // do not post request without all three fields valid.
+            return;
+        }
+        const requestBody = {
+            id: id,
+            status: status,
+            code: code
+        };
+        try {
+            hasFetched.current = false;
+            setLoading(true);
+            const resp = await postObservation(requestBody);
+            setRefreshData(true);
+        } catch (error) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
+
     }
 
     return (
@@ -57,11 +90,12 @@ function HomePage() {
                 <div>
                     Create a new observation
                 </div>
-                <input placeholder="Enter id"></input>
-                <input placeholder="Enter status"></input>
-                <input placeholder="Enter code"></input>
+                <input placeholder="Enter id" onChange={(e) => setId(e.target.value)}></input>
+                <input placeholder="Enter status" onChange={(e) => setStatus(e.target.value)}></input>
+                <input placeholder="Enter code" onChange={(e) => setCode(e.target.value)}></input>
+                <Button onClick={handleSubmit}>Submit Observation</Button>
             </div>
-            <div>
+            <div className={styles.observationTable}>
                 <table>
                     <thead>
                         <tr>
