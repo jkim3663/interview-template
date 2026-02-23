@@ -1,13 +1,8 @@
 {
+    "id": "hi3",
     "resourceType": "Observation",
     "status": "final",
-    "code": {
-      "coding": [ {
-        "system": "http://loinc.org",
-        "code": "85699-7",
-        "display": "Autopsy was performed"
-      } ]
-    },
+    "code": "85699-7",
     "subject": {
       "reference": "Patient/2"
     },

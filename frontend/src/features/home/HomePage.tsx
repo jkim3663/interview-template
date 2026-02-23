@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {getObservation, postObservation} from "../../services/api-service/api-service";
+import {getObservations, postObservation} from "../../services/api-service/api-service";
 import styles from './HomePage.module.css';
 import Button from "../../components/button/Button";
 
@@ -40,19 +40,15 @@ function HomePage() {
     async function fetchObservations() {
         try {
             setLoading(true);
-            const rawObservations: any[] = [];
-            for (let i = 1; i <= 4; i++) {
-                const response = await getObservation(String(i));
-                rawObservations.push(response);
-            }
-
-            const mapped: Item[] = rawObservations.map((value) => ({
-                id: value.subject.reference,
-                status: value.status,
-                code: value.code.coding[0].code
-            }));
-            setObservationData(mapped);
-            setRefreshData(false);
+            const response = await getObservations();
+            const items: Item[] = response.map(data => {
+                return {
+                    id: data.id,
+                    status: data.status,
+                    code: data.code
+                };
+            })
+            setObservationData(items);
         } catch (error) {
             setLoading(false);
             throw new Error('unexpected error: ');
@@ -75,13 +71,19 @@ function HomePage() {
             hasFetched.current = false;
             setLoading(true);
             const resp = await postObservation(requestBody);
+            resetForm();
             setRefreshData(true);
         } catch (error) {
             setLoading(false);
         } finally {
             setLoading(false);
         }
+    }
 
+    function resetForm() {
+        setId('');
+        setCode('');
+        setStatus('');
     }
 
     return (
@@ -90,9 +92,9 @@ function HomePage() {
                 <div>
                     Create a new observation
                 </div>
-                <input placeholder="Enter id" onChange={(e) => setId(e.target.value)}></input>
-                <input placeholder="Enter status" onChange={(e) => setStatus(e.target.value)}></input>
-                <input placeholder="Enter code" onChange={(e) => setCode(e.target.value)}></input>
+                <input placeholder="Enter id" value={id} onChange={(e) => setId(e.target.value)}></input>
+                <input placeholder="Enter status" value={status} onChange={(e) => setStatus(e.target.value)}></input>
+                <input placeholder="Enter code" value={code} onChange={(e) => setCode(e.target.value)}></input>
                 <Button onClick={handleSubmit}>Submit Observation</Button>
             </div>
             <div className={styles.observationTable}>

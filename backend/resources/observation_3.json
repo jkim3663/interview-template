@@ -1,16 +1,11 @@
 {
+    "id": "hi2",
     "resourceType": "Observation",
     "identifier": [ {
       "value": "Language"
     } ],
     "status": "final",
-    "code": {
-      "coding": [ {
-        "system": "http://loinc.org",
-        "code": "54899-0",
-        "display": "Preferred language"
-      } ]
-    },
+    "code": "54899-0",
     "subject": {
       "reference": "Patient/2"
     },

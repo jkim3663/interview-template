@@ -1,13 +1,8 @@
 {
+    "id": "bye",
     "resourceType": "Observation",
     "status": "final",
-    "code": {
-      "coding": [ {
-        "system": "http://loinc.org",
-        "code": "5778-6",
-        "display": "Color of Urine"
-      } ]
-    },
+    "code": "5778-6",
     "subject": {
       "reference": "Patient/2"
     },

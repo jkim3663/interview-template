@@ -19,7 +19,22 @@ def before_request():
 def health():
     return 'health'
 
-# TODO: implement function that would accurately fetch current # of data
+@app.get('/observations')
+def fetch_all_observations():
+    try:
+        with open('resources/cnt.txt', 'r') as file:
+            content = file.read()
+            cnt = int(content[0])
+        res = []
+        for observation_id in range(1, cnt + 1):
+            file_name = 'observation_' + str(observation_id) + '.json'
+            
+            with open(f'resources/{file_name}', 'r') as file:
+                data = json.load(file)
+                res.append(data)
+        return res, 200
+    except Exception as e:
+        print(f'error opening file from observations api: {e}')
 
 @app.get('/observations/<int:observation_id>')
 def fetch_observation(observation_id):
@@ -46,14 +61,16 @@ def fetch_observation(observation_id):
 @app.post('/observations')
 def create_observation():
     data = request.get_json()
-    p = Path('./resources/')
-    files = [entry.name for entry in p.iterdir() if entry.is_file() and 'observation' in entry.name]
-    new_id = -1
-    for file_nm in files:
-        new_id = max(new_id, int(file_nm[-6]))
-    new_id += 1
+    with open('resources/cnt.txt', 'r') as file:
+        context = file.read()
+        cnt = int(context)
+    cnt += 1
     
-    output_path = f'./resources/observation_{str(new_id)}.json'
+    output_path = f'./resources/observation_{str(cnt)}.json'
     with open(output_path, 'w') as json_file:
         json.dump(data, json_file, indent=4)
+    # increment after write is successful
+    with open('resources/cnt.txt', 'w') as file:
+        context = str(cnt)
+        file.write(context)
     return jsonify(data), 200

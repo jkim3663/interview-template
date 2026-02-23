@@ -1,7 +1,13 @@
 import { api } from "../../adapter/api";
+import type { ObservationModel } from "../../common/observation-model";
 
 const observationPath: string = 'observations';
 
+
+export function getObservations(): Promise<ObservationModel[]> {
+    const endpoint: string = observationPath;
+    return api.get(endpoint).then((response) => response.json());    
+}
 
 export function getObservation(observationId: string): Promise<Response> {
     const endpoint: string = observationPath + '/' + observationId;
